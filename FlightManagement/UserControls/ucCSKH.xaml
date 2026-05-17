@@ -1,0 +1,290 @@
+<UserControl x:Class="FlightManagement.UserControls.ucCSKH"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontFamily="Segoe UI">
+    <UserControl.Resources>
+        <Style x:Key="DefaultColumnHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+            <Setter Property="Background" Value="#1565C0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1976D2"/>
+                    <Setter Property="Foreground" Value="#FFF176"/>
+                </Trigger>
+                <Trigger Property="SortDirection" Value="Ascending">
+                    <Setter Property="Background" Value="#0D47A1"/>
+                    <Setter Property="Foreground" Value="#FFF176"/>
+                </Trigger>
+                <Trigger Property="SortDirection" Value="Descending">
+                    <Setter Property="Background" Value="#0D47A1"/>
+                    <Setter Property="Foreground" Value="#FFF176"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CenteredHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource DefaultColumnHeaderStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0,8"/>
+        </Style>
+        <Style x:Key="DefaultCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <materialDesign:DialogHost x:Name="cskhDialogHost" Identifier="CSKHDialogHost" CloseOnClickAway="False">
+        <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Chăm sóc Khách hàng" FontSize="24" FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
+
+        <!-- Main TabControl -->
+        <TabControl Grid.Row="1" x:Name="tabMain" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            
+            <!-- Tab 1: Khách Hàng (Email Queue) -->
+            <TabItem Foreground="White">
+                <TabItem.Header>
+                    <TextBlock Text="Khách Hàng" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                </TabItem.Header>
+                <Grid Margin="10" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Toolbar -->
+                    <Border Grid.Row="0" Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,16" BorderBrush="#E0E0E0" BorderThickness="1">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" BorderThickness="0" Padding="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,20,0">
+                                    <TextBlock Text="Trạng thái:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold" Foreground="#546E7A"/>
+                                    <ComboBox x:Name="cboStatusFilter" Width="200" materialDesign:HintAssist.Hint="Lọc trạng thái" 
+                                              SelectionChanged="cboStatusFilter_SelectionChanged" Background="White" Foreground="Black">
+                                        <ComboBoxItem Content="Tất cả" IsSelected="True"/>
+                                        <ComboBoxItem Content="Chưa gửi"/>
+                                        <ComboBoxItem Content="Đã gửi"/>
+                                        <ComboBoxItem Content="Lỗi"/>
+                                    </ComboBox>
+
+                                    <TextBlock Text="Ngày bay:" VerticalAlignment="Center" Margin="24,4,8,0" FontWeight="SemiBold" Foreground="#546E7A"/>
+                                    <DatePicker x:Name="dpFlightDateFilter" Width="140" materialDesign:HintAssist.Hint="Chọn ngày" VerticalAlignment="Center"
+                                                SelectedDateChanged="dpFlightDateFilter_SelectedDateChanged" Background="White" Foreground="Black"/>
+
+                                    <Button x:Name="btnRefreshMail" Margin="16,0,0,0" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="#3949AB" BorderBrush="#3949AB"
+                                            Content="LÀM MỚI" Click="btnRefreshMail_Click" Height="32" materialDesign:ButtonAssist.CornerRadius="6" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" MinWidth="350">
+                                    <Button x:Name="btnSendCustomEmail" Margin="0,0,12,0" Style="{StaticResource MaterialDesignFlatDarkBgButton}" 
+                                            Background="#FF9800" BorderBrush="#FF9800" Click="btnSendCustomEmail_Click" Height="36" Foreground="White" materialDesign:ButtonAssist.CornerRadius="6">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="EmailEdit" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="GỬI MAIL TÙY CHỈNH"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="btnSendSelectedEmail" Style="{StaticResource MaterialDesignFlatDarkBgButton}" 
+                                            Background="#3949AB" BorderBrush="#3949AB" Click="btnSendSelectedEmail_Click" Height="36" Foreground="White" materialDesign:ButtonAssist.CornerRadius="6">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="EmailFast" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="GỬI MAIL XÁC NHẬN TỰ ĐỘNG"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- DataGrid Container -->
+                    <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
+                        <DataGrid x:Name="dgMailQueue" AutoGenerateColumns="False" IsReadOnly="True" 
+                                  CanUserAddRows="False" HeadersVisibility="Column" 
+                                  SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                                  ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
+                                  BorderThickness="0" GridLinesVisibility="Horizontal"
+                                  AlternatingRowBackground="#F4F6F9" Background="White"
+                                  ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
+                                  CellStyle="{StaticResource DefaultCellStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Mã Đặt Chỗ" Width="130">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#FFF3E0" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding BookingReference}" FontWeight="Bold" Foreground="#E65100"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Tên Khách Hàng" Binding="{Binding TenKhach}" Width="160">
+                                    <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="250">
+                                    <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Tuyến Bay" Binding="{Binding TuyenBay}" Width="*">
+                                    <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="TextWrapping" Value="Wrap"/></Style></DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Ngày Bay" Binding="{Binding NgayBay, StringFormat=\{0:dd/MM/yyyy\}}" Width="140" HeaderStyle="{StaticResource CenteredHeaderStyle}">
+                                    <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="HorizontalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Thời Gian Tạo" Binding="{Binding CreatedTime, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="160" HeaderStyle="{StaticResource CenteredHeaderStyle}">
+                                    <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="HorizontalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTemplateColumn Header="Trạng Thái" Width="110" HeaderStyle="{StaticResource CenteredHeaderStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4" Padding="8,4" Background="{Binding StatusColor}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Status}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <!-- Pagination -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5">
+                        <Button x:Name="btnPrevMail" Content="&lt;" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="White" BorderBrush="White" Width="36" Height="36" Click="btnPrevMail_Click" Padding="0" materialDesign:ButtonAssist.CornerRadius="18" Margin="0,0,15,0"/>
+                        <TextBlock x:Name="txtPageInfoMail" Text="Trang 1/1" VerticalAlignment="Center" Margin="0,0,15,0" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                        <Button x:Name="btnNextMail" Content="&gt;" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="White" BorderBrush="White" Width="36" Height="36" Click="btnNextMail_Click" Padding="0" materialDesign:ButtonAssist.CornerRadius="18"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 2: Phản hồi (Feedback) -->
+            <TabItem Foreground="White">
+                <TabItem.Header>
+                    <TextBlock Text="Đánh Giá" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                </TabItem.Header>
+                <Grid Margin="10" VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Panel: Add Feedback Form -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="16" BorderBrush="#EEEEEE" BorderThickness="1" Margin="0,0,15,10" VerticalAlignment="Top">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="GHI NHẬN ĐÁNH GIÁ" FontWeight="Bold" FontSize="15" Foreground="#3949AB" Margin="0,0,0,16"/>
+                                
+                                <TextBlock Text="Tên hành khách (*)" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtFbName" Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="Black" Margin="0,0,0,16"/>
+                                
+                                <TextBlock Text="Số điện thoại" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtFbPhone" Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="Black" Margin="0,0,0,16"/>
+                                
+                                <TextBlock Text="Email liên hệ" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtFbEmail" Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="Black" Margin="0,0,0,16"/>
+                                
+                                <TextBlock Text="Mức độ hài lòng (*)" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="cboFbRating" Style="{StaticResource MaterialDesignOutlinedComboBox}" Foreground="Black" Margin="0,0,0,16">
+                                    <ComboBoxItem Content="5 Sao (Tuyệt vời)" IsSelected="True"/>
+                                    <ComboBoxItem Content="4 Sao (Rất tốt)"/>
+                                    <ComboBoxItem Content="3 Sao (Bình thường)"/>
+                                    <ComboBoxItem Content="2 Sao (Tệ)"/>
+                                    <ComboBoxItem Content="1 Sao (Rất tệ)"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Hạng mục đánh giá (*)" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="cboFbCategory" Style="{StaticResource MaterialDesignOutlinedComboBox}" Foreground="Black" Margin="0,0,0,16" SelectionChanged="cboFbCategory_SelectionChanged">
+                                    <ComboBoxItem Content="Thái độ phục vụ" IsSelected="True"/>
+                                    <ComboBoxItem Content="Chất lượng chuyến bay"/>
+                                    <ComboBoxItem Content="Đồ ăn &amp; Thức uống"/>
+                                    <ComboBoxItem Content="Khác"/>
+                                </ComboBox>
+                                
+                                <StackPanel x:Name="pnlCustomCategory" Visibility="Collapsed" Margin="0,0,0,16">
+                                    <TextBlock Text="Nhập tên hạng mục (*)" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                    <TextBox x:Name="txtCustomCategory" Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="Black"/>
+                                </StackPanel>
+                                
+                                <TextBlock Text="Nội dung chi tiết phản hồi (*)" Foreground="#546E7A" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtFbContent" Foreground="Black"
+                                         Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                                         TextWrapping="Wrap" AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto" Margin="0,0,0,24"/>
+                                
+                                <Button x:Name="btnSaveFeedback" Content="GHI NHẬN VÀ LƯU" 
+                                        Style="{StaticResource MaterialDesignFlatDarkBgButton}" Background="#4CAF50" BorderBrush="#4CAF50" 
+                                        Click="btnSaveFeedback_Click" Height="40" Foreground="White" materialDesign:ButtonAssist.CornerRadius="6"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Right Panel: Feedback History -->
+                    <Grid Grid.Column="1" Margin="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Border Grid.Row="0" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
+                            <DataGrid x:Name="dgFeedback" AutoGenerateColumns="False" IsReadOnly="True" 
+                                      CanUserAddRows="False" HeadersVisibility="Column" 
+                                      ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
+                                      BorderThickness="0" GridLinesVisibility="Horizontal"
+                                      AlternatingRowBackground="#F4F6F9" Background="White"
+                                      ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
+                                      CellStyle="{StaticResource DefaultCellStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Hành Khách" Binding="{Binding PassengerName}" FontWeight="SemiBold" Width="140">
+                                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Danh Mục" Binding="{Binding Category}" Width="150">
+                                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTemplateColumn Header="Đánh Giá" HeaderStyle="{StaticResource CenteredHeaderStyle}" Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Rating}" FontWeight="Bold" Foreground="#FFA000" VerticalAlignment="Center"/>
+                                                    <materialDesign:PackIcon Kind="Star" Foreground="#FFA000" Width="14" Height="14" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Nội Dung" Binding="{Binding Content}" Width="*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Thời Gian" Binding="{Binding CreatedTime, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="140" HeaderStyle="{StaticResource CenteredHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="HorizontalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Nhân Viên" Binding="{Binding NhanVienGhiNhan}" Width="150">
+                                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style></DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+
+                        <!-- Pagination for Feedback -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5">
+                            <Button x:Name="btnPrevFb" Content="&lt;" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="White" BorderBrush="White" Width="36" Height="36" Click="btnPrevFb_Click" Padding="0" materialDesign:ButtonAssist.CornerRadius="18" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="txtPageInfoFb" Text="Trang 1/1" VerticalAlignment="Center" Margin="0,0,15,0" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                            <Button x:Name="btnNextFb" Content="&gt;" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="White" BorderBrush="White" Width="36" Height="36" Click="btnNextFb_Click" Padding="0" materialDesign:ButtonAssist.CornerRadius="18"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+    </materialDesign:DialogHost>
+</UserControl>

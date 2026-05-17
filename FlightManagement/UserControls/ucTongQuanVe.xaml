@@ -1,0 +1,37 @@
+<UserControl x:Class="FlightManagement.UserControls.ucTongQuanVe"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="Quản lý Vé &amp; Đặt chỗ" FontSize="24" FontWeight="Bold" Margin="0,0,0,15" Foreground="White" />
+        
+        <TabControl Grid.Row="1" x:Name="tabControl" SelectionChanged="tabControl_SelectionChanged">
+            <TabItem Foreground="White">
+                <TabItem.Header>
+                    <TextBlock Text="Danh sách Vé" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                </TabItem.Header>
+                <ContentControl x:Name="contentDanhSachVe" Margin="0,15,0,0" Foreground="Black"/>
+            </TabItem>
+            
+            <TabItem Foreground="White" x:Name="tabDatVeMoi">
+                <TabItem.Header>
+                    <TextBlock Text="Đặt vé mới" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                </TabItem.Header>
+                <ContentControl x:Name="contentDatVeMoi" Margin="0,15,0,0" Foreground="Black"/>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Loading Overlay phủ toàn bộ ucTongQuanVe -->
+        <Border x:Name="pnlLoading" Grid.RowSpan="2" Background="#C0FFFFFF" Visibility="Collapsed" CornerRadius="16" Panel.ZIndex="1000">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="55" Height="55" Foreground="#3F51B5"/>
+                <TextBlock Text="Đang xử lý đặt vé..." FontSize="17" FontWeight="Bold" Margin="0,15,0,0" Foreground="#3F51B5" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

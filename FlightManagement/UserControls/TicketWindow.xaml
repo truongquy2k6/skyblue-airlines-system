@@ -1,0 +1,197 @@
+<Window x:Class="FlightManagement.UserControls.TicketWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Vé Điện Tử" WindowState="Maximized"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#88000000" WindowStyle="None" AllowsTransparency="True">
+    <Window.Resources>
+        <DropShadowEffect x:Key="TicketShadow" BlurRadius="30" ShadowDepth="0" Color="Black" Opacity="0.5"/>
+    </Window.Resources>
+    
+    <materialDesign:DialogHost x:Name="dialogHost" CloseOnClickAway="False">
+    <Grid>
+        <!-- Overlay to close on click outside (optional but good for UX) -->
+        <Button x:Name="btnOverlay" Background="Transparent" BorderThickness="0" Click="btnClose_Click"/>
+
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Control Bar (Shifted slightly for better visibility) -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
+                <Button Content="XUẤT VÉ (PNG)" Click="btnPrint_Click" Background="#2196F3" BorderThickness="0" Foreground="White" Width="180" Height="40" materialDesign:ButtonAssist.CornerRadius="20" Margin="0,0,10,0">
+                    <Button.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+                    </Button.Effect>
+                </Button>
+                <Button Content="XUẤT VÉ (PDF)" Click="btnExportPDF_Click" Background="#FF5722" BorderThickness="0" Foreground="White" Width="180" Height="40" materialDesign:ButtonAssist.CornerRadius="20" Margin="0,0,15,0">
+                    <Button.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+                    </Button.Effect>
+                </Button>
+                <Button Content="ĐÓNG" Click="btnClose_Click" Style="{StaticResource MaterialDesignOutlinedButton}" BorderThickness="2" Width="100" Height="40" materialDesign:ButtonAssist.CornerRadius="20" Foreground="White" BorderBrush="White"/>
+            </StackPanel>
+
+            <!-- Ticket Body Area -->
+            <Border Grid.Row="1" x:Name="printArea" Background="White" CornerRadius="20" Effect="{StaticResource TicketShadow}" Width="900" Height="350">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/> <!-- Vertical Text -->
+                    <ColumnDefinition Width="2.5*"/> <!-- Main Content -->
+                    <ColumnDefinition Width="Auto"/> <!-- Divider -->
+                    <ColumnDefinition Width="1.2*"/> <!-- Stub -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Hidden fields to support code-behind logic without affecting UI layout much -->
+                <Grid Visibility="Collapsed">
+                    <TextBlock x:Name="txtTuyenBay"/>
+                    <TextBlock x:Name="txtBookingRef"/>
+                </Grid>
+
+                <!-- 1. Vertical Text Section -->
+                <Border Background="Transparent" Grid.Column="0">
+                    <TextBlock Text="VÉ MÁY BAY" FontSize="32" FontWeight="Light" Foreground="#78909C" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Border>
+
+                <!-- 2. Main Content Section -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="65"/> <!-- Blue Header -->
+                        <RowDefinition Height="*"/>   <!-- Body Content -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Blue Header Bar -->
+                    <Border Background="#1A88C9" CornerRadius="0,15,0,0" Margin="0,0,0,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
+                            <materialDesign:PackIcon Kind="Airplane" Width="32" Height="32" Foreground="White"/>
+                            <TextBlock Text="THẺ LÊN MÁY BAY" FontSize="22" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="15,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Body Grid -->
+                    <Grid Grid.Row="1" Margin="35,25">
+                        <!-- Background Airplane Silhouette -->
+                        <materialDesign:PackIcon Kind="Airplane" Width="260" Height="260" Foreground="#EEEEEE" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.6">
+                            <materialDesign:PackIcon.LayoutTransform>
+                                <RotateTransform Angle="45"/>
+                            </materialDesign:PackIcon.LayoutTransform>
+                        </materialDesign:PackIcon>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Top Info Row -->
+                            <UniformGrid Columns="4">
+                                <StackPanel>
+                                    <TextBlock Text="CHUYẾN BAY" FontSize="11" Foreground="#90A4AE" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtChuyenBay" Text="SB1187" FontSize="20" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="GIỜ LÊN MÁY BAY" FontSize="11" Foreground="#90A4AE" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtGioBay" Text="7:20" FontSize="20" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="HÀNG GHẾ" FontSize="11" Foreground="#90A4AE" FontWeight="Bold"/>
+                                    <TextBlock Text="3" FontSize="20" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="SỐ GHẾ" FontSize="11" Foreground="#90A4AE" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtGhe" Text="10B" FontSize="20" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                            </UniformGrid>
+
+                            <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                <TextBlock Text="TÊN HÀNH KHÁCH" FontSize="11" Foreground="#90A4AE" FontWeight="Bold"/>
+                                <TextBlock x:Name="txtTenKhach" Text="NGUYEN VAN A" FontSize="18" FontWeight="Bold" Foreground="#263238"/>
+                            </StackPanel>
+
+                            <!-- Bottom Info Row -->
+                            <Grid Grid.Row="2" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="TỪ:" FontSize="12" Foreground="#607D8B" FontWeight="Bold" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="txtFrom" Text="SGN" FontSize="18" FontWeight="SemiBold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="NGÀY BAY:" FontSize="12" Foreground="#607D8B" FontWeight="Bold" Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="txtNgayBay" Text="15 MAY 2026" FontSize="18" FontWeight="SemiBold" Foreground="#263238"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- 3. Dotted Divider -->
+                <Grid Grid.Column="2" Width="40">
+                    <Rectangle Width="2" Stroke="#CFD8DC" StrokeDashArray="4 4" VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,10"/>
+                </Grid>
+
+                <!-- 4. Stub Section -->
+                <Grid Grid.Column="3">
+                    <Border Background="#F5F7F9" CornerRadius="0,20,20,0" Padding="25">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Seat & Class -->
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="SỐ GHẾ" FontSize="10" Foreground="#90A4AE" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtGheStub" Text="10B" FontSize="22" FontWeight="Black" Foreground="#263238"/>
+                                </StackPanel>
+                                <TextBlock x:Name="txtHangGhe" Text="CLASS: BUSINESS" FontSize="10" Foreground="#90A4AE" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            </Grid>
+
+                            <!-- Stub Info List -->
+                            <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="TỪ:" FontSize="10" Foreground="#607D8B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtFromStub" Text="SGN" FontSize="13" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="TÊN HÀNH KHÁCH:" FontSize="10" Foreground="#607D8B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtTenKhachStub" Text="NGUYEN VAN A" FontSize="13" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="CHUYẾN BAY:" FontSize="10" Foreground="#607D8B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtChuyenBayStub" Text="SB1187" FontSize="13" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="ĐẾN:" FontSize="10" Foreground="#607D8B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtToStub" Text="HAN" FontSize="13" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="NGÀY BAY:" FontSize="10" Foreground="#607D8B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtNgayBayStub" Text="15 MAY 2026" FontSize="13" FontWeight="Bold" Foreground="#263238"/>
+                                </StackPanel>
+                                <TextBlock x:Name="txtTo" Text="HAN" Visibility="Collapsed"/>
+                            </StackPanel>
+
+                            <!-- Stub Footer -->
+                            <TextBlock Grid.Row="2" Text="VÉ MÁY BAY" FontSize="14" FontWeight="SemiBold" Foreground="#B0BEC5" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+        </Grid>
+    </Grid>
+    </materialDesign:DialogHost>
+</Window>
