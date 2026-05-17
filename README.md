@@ -136,8 +136,7 @@ FlightManagement_Project_Update/
 
 Nếu bạn có bất kỳ câu hỏi nào liên quan đến ứng dụng hoặc kỹ thuật, vui lòng liên hệ đội ngũ phát triển của chúng tôi:
 
-* 📧 **Email Hỗ trợ:** support@skyblueairline.com
-* 📞 **Hotline Hỗ trợ 24/7:** 1900 6789 (Nhấn phím 1)
+* 📧 **Email Hỗ trợ:** truongquy2k6@gmail.com
 * 🌐 **Website Dự án:** [skyblue-airline.netlify.app](https://skyblue-airline.netlify.app/)
 
 ---
