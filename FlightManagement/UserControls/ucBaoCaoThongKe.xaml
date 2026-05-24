@@ -90,7 +90,7 @@
 
                     <!-- DataGrid stretched Container -->
                     <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgHanhKhach" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                        <DataGrid x:Name="dgHanhKhach" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}"
@@ -458,7 +458,7 @@
                                 <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="2" VerticalAlignment="Top">
                                     <Grid>
                                         <!-- DataGrid 1: Ticket Agent Report -->
-                                        <DataGrid x:Name="dgBaoCaoBanVe" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                        <DataGrid x:Name="dgBaoCaoBanVe" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" CanUserAddRows="False"
                                                   GridLinesVisibility="All" BorderThickness="0" ColumnHeaderHeight="42" RowHeight="40" FontSize="13"
                                                   AlternatingRowBackground="#FAFBFD" HorizontalScrollBarVisibility="Auto" Visibility="Visible">
                                             <DataGrid.ColumnHeaderStyle>
@@ -557,7 +557,7 @@
                                         </DataGrid>
 
                                         <!-- DataGrid 2: Operator / Coordinator Report -->
-                                        <DataGrid x:Name="dgBaoCaoDieuHanh" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                        <DataGrid x:Name="dgBaoCaoDieuHanh" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" CanUserAddRows="False"
                                                   GridLinesVisibility="All" BorderThickness="0" ColumnHeaderHeight="42" RowHeight="40" FontSize="13"
                                                   AlternatingRowBackground="#FAFBFD" HorizontalScrollBarVisibility="Auto" Visibility="Collapsed">
                                             <DataGrid.ColumnHeaderStyle>

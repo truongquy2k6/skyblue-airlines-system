@@ -120,7 +120,7 @@
                     
                     <!-- VerticalAlignment="Top" eliminates empty white space in short lists -->
                     <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgTruyCap" AutoGenerateColumns="False" IsReadOnly="False" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                        <DataGrid x:Name="dgTruyCap" AutoGenerateColumns="False" IsReadOnly="False" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}"
@@ -257,8 +257,8 @@
                     </Grid>
                     
                     <!-- VerticalAlignment="Top" eliminates empty white space in short lists -->
-                    <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgChinhSua" AutoGenerateColumns="False" IsReadOnly="False" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                     <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" VerticalAlignment="Top">
+                        <DataGrid x:Name="dgChinhSua" AutoGenerateColumns="False" IsReadOnly="False" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}"

@@ -166,7 +166,7 @@
                                    FontWeight="SemiBold" Cursor="Hand" VerticalAlignment="Center" MouseLeftButtonDown="btnXemTatCaLichBay_Click"/>
                     </Grid>
                     <DataGrid Grid.Row="1" x:Name="dgLichBay" AutoGenerateColumns="False" IsReadOnly="True" 
-                              SelectionUnit="CellOrRowHeader" ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                              SelectionUnit="FullRow" ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                               HeadersVisibility="Column" CanUserAddRows="False" BorderThickness="0"
                               GridLinesVisibility="Horizontal" Background="Transparent"
                               HorizontalGridLinesBrush="#F0F0F0" RowHeight="38"
@@ -212,7 +212,7 @@
                         <TextBlock Text="Xem tất cả →" HorizontalAlignment="Right" FontSize="12" Foreground="#3949AB" FontWeight="SemiBold" Cursor="Hand" MouseLeftButtonDown="btnXemTatCaDatVe_Click"/>
                     </Grid>
                     <DataGrid Grid.Row="1" x:Name="dgDatVeGanDay" AutoGenerateColumns="False" IsReadOnly="True" 
-                              SelectionUnit="CellOrRowHeader" ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                              SelectionUnit="FullRow" ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                               HeadersVisibility="Column" CanUserAddRows="False" BorderThickness="0"
                               GridLinesVisibility="Horizontal" Background="Transparent" HorizontalGridLinesBrush="#F0F0F0" RowHeight="38"
                               RowBackground="Transparent" AlternatingRowBackground="#F8FAFC">

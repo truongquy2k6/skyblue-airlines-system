@@ -101,7 +101,7 @@
                     
                     <!-- DataGrid stretched Container (VerticalAlignment="Top") -->
                     <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgSanBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                        <DataGrid x:Name="dgSanBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}"
@@ -216,7 +216,7 @@
                     
                     <!-- DataGrid stretched Container (VerticalAlignment="Top") -->
                     <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgTuyenBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                        <DataGrid x:Name="dgTuyenBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}"
@@ -347,7 +347,7 @@
                     
                     <!-- DataGrid stretched Container (VerticalAlignment="Top") -->
                     <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
-                        <DataGrid x:Name="dgMayBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="CellOrRowHeader" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
+                        <DataGrid x:Name="dgMayBay" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow" ClipboardCopyMode="ExcludeHeader" CanUserAddRows="False"
                                   GridLinesVisibility="Horizontal" BorderThickness="0" ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   ColumnHeaderStyle="{StaticResource DefaultColumnHeaderStyle}"
                                   CellStyle="{StaticResource DefaultCellStyle}">

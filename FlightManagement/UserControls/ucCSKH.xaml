@@ -112,7 +112,7 @@
                     <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
                         <DataGrid x:Name="dgMailQueue" AutoGenerateColumns="False" IsReadOnly="True" 
                                   CanUserAddRows="False" HeadersVisibility="Column" 
-                                  SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                                  SelectionMode="Extended" SelectionUnit="FullRow"
                                   ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                   BorderThickness="0" GridLinesVisibility="Horizontal"
                                   AlternatingRowBackground="#F4F6F9" Background="White"
@@ -235,6 +235,7 @@
                         <Border Grid.Row="0" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,10" VerticalAlignment="Top">
                             <DataGrid x:Name="dgFeedback" AutoGenerateColumns="False" IsReadOnly="True" 
                                       CanUserAddRows="False" HeadersVisibility="Column" 
+                                      SelectionUnit="FullRow"
                                       ColumnHeaderHeight="40" RowHeight="42" FontSize="13.5"
                                       BorderThickness="0" GridLinesVisibility="Horizontal"
                                       AlternatingRowBackground="#F4F6F9" Background="White"
