@@ -132,7 +132,7 @@
                     <Viewbox Grid.Row="1" Stretch="Uniform" Margin="0,5,0,0" HorizontalAlignment="Center" MaxHeight="280">
                         <Grid Width="350" Height="250">
                             <!-- Nền mô phỏng hình oval tĩnh -->
-                            <Ellipse Width="300" Height="220" Fill="#F0F4FF" Opacity="0.6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Ellipse Width="340" Height="240" Fill="#F0F4FF" Opacity="0.6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             
                             <!-- Canvas động cho các điểm sân bay và đường bay -->
                             <Canvas x:Name="canvasMap" Width="350" Height="250" ClipToBounds="False"/>

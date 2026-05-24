@@ -83,10 +83,10 @@ namespace FlightManagement.UserControls
                 DataTable dt = new VeBUS().HienThi();
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    // Sắp xếp theo ngày giờ mới nhất và lấy 10 vé
+                    // Sắp xếp theo ngày giờ mới nhất và lấy tối đa 5 vé để giữ giao diện gọn gàng
                     dt.DefaultView.Sort = "NgayGio DESC";
-                    DataTable top10 = dt.DefaultView.ToTable().AsEnumerable().Take(10).CopyToDataTable();
-                    dgDatVeGanDay.ItemsSource = top10.DefaultView;
+                    DataTable top5 = dt.DefaultView.ToTable().AsEnumerable().Take(5).CopyToDataTable();
+                    dgDatVeGanDay.ItemsSource = top5.DefaultView;
                 }
             }
             catch { }
@@ -115,8 +115,9 @@ namespace FlightManagement.UserControls
                 }
                 else
                 {
-                    // Nếu có dữ liệu, đổ toàn bộ bảng DataTable vào trong DataGrid (Thông qua DefaultView của nó) để WPF tự động render lưới
-                    dgLichBay.ItemsSource = dt.DefaultView;
+                    // Chỉ hiển thị tối đa 5 chuyến bay đầu tiên để giữ chiều cao giao diện cân đối và bản đồ không bị kéo bự
+                    DataTable top5 = dt.AsEnumerable().Take(5).CopyToDataTable();
+                    dgLichBay.ItemsSource = top5.DefaultView;
                 }
             }
             // Tương tự, nếu mất mạng thì bỏ qua, không làm sập phần mềm
@@ -154,40 +155,40 @@ namespace FlightManagement.UserControls
             {
                 DataTable dt = new TuyenBayBUS().HienThi();
                 
-                // Tọa độ mô phỏng các sân bay (Mô phỏng bản đồ chữ S của Việt Nam)
+                // Tọa độ mô phỏng các sân bay (Mô phỏng bản đồ chữ S của Việt Nam được kéo dãn tối ưu)
                 var airportCoords = new System.Collections.Generic.Dictionary<string, Point>()
                 {
                     // Sân bay nội địa
-                    { "HAN", new Point(160, 40) },   // Hà Nội
-                    { "HPH", new Point(180, 45) },   // Hải Phòng
-                    { "VDO", new Point(190, 35) },   // Vân Đồn
+                    { "HAN", new Point(165, 30) },   // Hà Nội
+                    { "HPH", new Point(195, 40) },   // Hải Phòng
+                    { "VDO", new Point(210, 30) },   // Vân Đồn
                     { "DIN", new Point(110, 25) },   // Điện Biên
-                    { "THD", new Point(150, 60) },   // Thanh Hóa
-                    { "VII", new Point(140, 70) },   // Vinh
-                    { "VDH", new Point(160, 90) },   // Đồng Hới
-                    { "HUI", new Point(180, 110) },  // Huế
-                    { "DAD", new Point(200, 120) },  // Đà Nẵng
-                    { "VCL", new Point(210, 130) },  // Chu Lai
-                    { "UIH", new Point(220, 150) },  // Quy Nhơn
-                    { "TBB", new Point(230, 160) },  // Tuy Hòa
-                    { "CXR", new Point(230, 175) },  // Nha Trang (Cam Ranh)
-                    { "DLI", new Point(200, 175) },  // Đà Lạt
-                    { "BMV", new Point(200, 160) },  // Buôn Ma Thuột
-                    { "PXU", new Point(190, 145) },  // Pleiku
-                    { "SGN", new Point(160, 195) },  // TP. Hồ Chí Minh
-                    { "VCA", new Point(140, 210) },  // Cần Thơ
-                    { "PQC", new Point(100, 215) },  // Phú Quốc
-                    { "VCS", new Point(180, 225) },  // Côn Đảo
+                    { "THD", new Point(150, 55) },   // Thanh Hóa
+                    { "VII", new Point(135, 75) },   // Vinh
+                    { "VDH", new Point(155, 95) },   // Đồng Hới
+                    { "HUI", new Point(175, 115) },  // Huế
+                    { "DAD", new Point(200, 125) },  // Đà Nẵng
+                    { "VCL", new Point(215, 135) },  // Chu Lai
+                    { "UIH", new Point(225, 150) },  // Quy Nhơn
+                    { "TBB", new Point(235, 160) },  // Tuy Hòa
+                    { "CXR", new Point(235, 180) },  // Nha Trang (Cam Ranh)
+                    { "DLI", new Point(200, 180) },  // Đà Lạt
+                    { "BMV", new Point(200, 165) },  // Buôn Ma Thuột
+                    { "PXU", new Point(190, 150) },  // Pleiku
+                    { "SGN", new Point(160, 200) },  // TP. Hồ Chí Minh
+                    { "VCA", new Point(130, 215) },  // Cần Thơ
+                    { "PQC", new Point(70, 220) },   // Phú Quốc
+                    { "VCS", new Point(180, 235) },  // Côn Đảo
 
                     // Sân bay quốc tế (tương đối)
-                    { "BKK", new Point(40, 160) },   // Bangkok
-                    { "SIN", new Point(100, 230) },  // Singapore
-                    { "KUL", new Point(110, 225) },  // Kuala Lumpur
-                    { "NRT", new Point(330, -10) },  // Tokyo
-                    { "HND", new Point(330, -10) },  // Tokyo
-                    { "ICN", new Point(310, 10) },   // Seoul
-                    { "TPE", new Point(290, 50) },   // Taipei
-                    { "HKG", new Point(230, 50) }    // Hong Kong
+                    { "BKK", new Point(25, 140) },   // Bangkok
+                    { "SIN", new Point(50, 240) },   // Singapore
+                    { "KUL", new Point(80, 245) },   // Kuala Lumpur
+                    { "NRT", new Point(340, 10) },   // Tokyo
+                    { "HND", new Point(340, 10) },   // Tokyo
+                    { "ICN", new Point(320, 30) },   // Seoul
+                    { "TPE", new Point(295, 60) },   // Taipei
+                    { "HKG", new Point(245, 65) }    // Hong Kong
                 };
 
                 // Dọn dẹp Canvas (Xóa các điểm vẽ cũ nếu có)
