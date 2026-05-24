@@ -70,20 +70,23 @@ namespace FlightManagement.UserControls
         {
             try
             {
-                // Tự động lấy đường dẫn thư mục "Documents" của người dùng để lưu vé
-                string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-                string folderPath = System.IO.Path.Combine(documentsPath, "SkyBlueTickets");
-                
-                // Kiểm tra và tạo thư mục nếu chưa tồn tại
-                if (!System.IO.Directory.Exists(folderPath))
-                {
-                    System.IO.Directory.CreateDirectory(folderPath);
-                }
-
                 // Tạo tên file tự động: Mã vé + Tên khách hàng (Bỏ dấu cách)
                 string safeName = txtTenKhach.Text.Replace(" ", "_");
-                string fileName = $"{txtBookingRef.Text}_{safeName}.png";
-                string fullPath = System.IO.Path.Combine(folderPath, fileName);
+                
+                // Mở hộp thoại SaveFileDialog để người dùng tự chọn nơi lưu dễ tìm nhất (Mặc định mở ở Desktop)
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    FileName = $"{txtBookingRef.Text}_{safeName}",
+                    DefaultExt = ".png",
+                    Filter = "PNG Image (*.png)|*.png|All Files (*.*)|*.*",
+                    InitialDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+                    Title = "Chọn nơi lưu ảnh vé máy bay SkyBlue"
+                };
+
+                bool? result = saveFileDialog.ShowDialog();
+                if (result != true) return; // Người dùng nhấn Hủy
+
+                string fullPath = saveFileDialog.FileName;
 
                 // Chụp ảnh giao diện vé (High Quality - 300 DPI)
                 double dpi = 300;
@@ -101,7 +104,7 @@ namespace FlightManagement.UserControls
 
                 rtb.Render(printArea);
 
-                // Lưu ảnh dưới định dạng PNG (Vì xuất PDF tự động không cần hộp thoại yêu cầu thư viện bên thứ 3)
+                // Lưu ảnh dưới định dạng PNG
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(rtb));
 
@@ -110,7 +113,19 @@ namespace FlightManagement.UserControls
                     encoder.Save(stream);
                 }
 
-                ShowDialogMessage($"Vé đã được xuất tự động vào thư mục:\n{fullPath}", "Xuất vé thành công");
+                // Tự động mở File Explorer và chọn (highlight) file ảnh vé vừa lưu để người dùng thấy ngay
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = $"/select,\"{fullPath}\"",
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
+
+                ShowDialogMessage($"Vé đã được xuất thành công!\nĐường dẫn: {fullPath}", "Xuất vé thành công");
                 
                 // Sau khi xuất xong thì tự động đóng cửa sổ vé
                 this.Close();
