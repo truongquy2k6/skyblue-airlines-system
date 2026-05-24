@@ -305,6 +305,9 @@ namespace FlightManagement.UserControls
                 }
 
                 FlightManagement.Helpers.ExcelExporter.ExportDataTable(dtExport, "DANH SÁCH LỊCH BAY HÃNG HÀNG KHÔNG SKYBLUE", "DanhSachLichBay.xlsx");
+
+                // Ghi nhận lịch sử chỉnh sửa hệ thống
+                lichSuBus.GhiNhanChinhSua(_userId, "Xuất Excel", "Lịch bay", "Xuất danh sách lịch bay ra tệp Excel");
             }
             catch (Exception ex)
             {

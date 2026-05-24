@@ -13,6 +13,7 @@ namespace FlightManagement.UserControls
     {
         private readonly CSKHBUS cskhBus = new CSKHBUS();
         private readonly EmailNotificationService emailService = new EmailNotificationService();
+        private readonly LichSuBUS lichSuBus = new();
         private int _userId;
         private MainWindow _mainWindow;
 
@@ -282,6 +283,13 @@ namespace FlightManagement.UserControls
 
             cskhDialogHost.IsOpen = false;
             btnSendSelectedEmail.IsEnabled = true;
+
+            // Ghi nhận lịch sử chỉnh sửa hệ thống
+            if (successCount > 0)
+            {
+                lichSuBus.GhiNhanChinhSua(_userId, "Gửi Email", "CSKH", $"Gửi thành công {successCount} email xác nhận đặt vé");
+            }
+
             ShowDialogMessage($"Đã xử lý xong.\nThành công: {successCount}\nThất bại: {errorCount}", "Kết quả gửi mail");
             LoadMailQueue();
         }
@@ -385,6 +393,9 @@ namespace FlightManagement.UserControls
                 if (success)
                 {
                     ShowDialogMessage("Đã ghi nhận Feedback thành công!", "Thành công");
+                    
+                    // Ghi nhận lịch sử chỉnh sửa hệ thống
+                    lichSuBus.GhiNhanChinhSua(_userId, "Thêm Feedback", "CSKH", $"Ghi nhận đánh giá từ hành khách {name} - Hạng mục: {category}");
                     
                     // Reset form
                     txtFbName.Text = "";

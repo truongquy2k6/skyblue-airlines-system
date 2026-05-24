@@ -209,7 +209,27 @@ namespace FlightManagement.UserControls
                         FontSize = 13.5, // Cỡ chữ chuẩn
                         AlternatingRowBackground = new SolidColorBrush(Color.FromRgb(244, 246, 249)),
                         ColumnHeaderStyle = (Style)FindResource("DefaultColumnHeaderStyle"),
-                        CellStyle = (Style)FindResource("DefaultCellStyle")
+                        CellStyle = (Style)FindResource("DefaultCellStyle"),
+                        SelectionUnit = DataGridSelectionUnit.FullRow
+                    };
+
+                    // Đăng ký sự kiện lăn chuột trực tiếp để cuộn ScrollViewer cha bên ngoài một cách mượt mà
+                    dg.PreviewMouseWheel += (sender, args) =>
+                    {
+                        if (args.Handled) return;
+                        
+                        var parent = VisualTreeHelper.GetParent(dg);
+                        while (parent != null)
+                        {
+                            if (parent is ScrollViewer sv)
+                            {
+                                args.Handled = true;
+                                double newOffset = sv.VerticalOffset - (args.Delta * 0.4);
+                                sv.ScrollToVerticalOffset(newOffset);
+                                break;
+                            }
+                            parent = VisualTreeHelper.GetParent(parent);
+                        }
                     };
 
                     // Bắt đầu nối các Cột (Column) vào DataGrid vừa tạo. Mỗi cột ràng buộc (Binding) với một trường trong DB

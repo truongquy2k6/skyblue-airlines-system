@@ -52,13 +52,15 @@ namespace FlightManagement
                 if (scrollViewer == null || scrollViewer.ScrollableHeight == 0)
                 {
                     e.Handled = true;
-                    // Phát sinh lại sự kiện lăn chuột dạng Bubbling (MouseWheelEvent) để truyền lên cho ScrollViewer cha của trang cuộn tiếp
-                    var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                    
+                    // Tìm ScrollViewer cha bên ngoài DataGrid
+                    var parentScrollViewer = FindParent<ScrollViewer>(dg);
+                    if (parentScrollViewer != null)
                     {
-                        RoutedEvent = UIElement.MouseWheelEvent,
-                        Source = sender
-                    };
-                    dg.RaiseEvent(eventArg);
+                        // Cuộn trực tiếp bằng cách dịch chuyển offset (120 delta tương đương cuộn 48 pixel)
+                        double newOffset = parentScrollViewer.VerticalOffset - (e.Delta * 0.4);
+                        parentScrollViewer.ScrollToVerticalOffset(newOffset);
+                    }
                 }
                 else
                 {
@@ -68,15 +70,28 @@ namespace FlightManagement
                     if ((e.Delta > 0 && offset == 0) || (e.Delta < 0 && offset >= scrollViewer.ScrollableHeight))
                     {
                         e.Handled = true;
-                        var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                        
+                        var parentScrollViewer = FindParent<ScrollViewer>(dg);
+                        if (parentScrollViewer != null)
                         {
-                            RoutedEvent = UIElement.MouseWheelEvent,
-                            Source = sender
-                        };
-                        dg.RaiseEvent(eventArg);
+                            double newOffset = parentScrollViewer.VerticalOffset - (e.Delta * 0.4);
+                            parentScrollViewer.ScrollToVerticalOffset(newOffset);
+                        }
                     }
                 }
             }
+        }
+
+        // Hàm hỗ trợ duyệt Visual Tree ngược lên trên để tìm đối tượng cha phù hợp
+        private static T? FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            
+            if (parentObject is T parent)
+                return parent;
+                
+            return FindParent<T>(parentObject);
         }
 
         // Hàm hỗ trợ duyệt Visual Tree để tìm đối tượng con phù hợp

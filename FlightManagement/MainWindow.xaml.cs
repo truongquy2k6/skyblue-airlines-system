@@ -259,7 +259,7 @@ namespace FlightManagement
                         
                     // Xử lý khi mã trang tương ứng với yêu cầu mở Báo cáo & Thống kê
                     case "BaoCao":
-                        page = new ucBaoCaoThongKe();
+                        page = new ucBaoCaoThongKe(_userId);
                         break;
                         
                     // Xử lý khi mã trang tương ứng với yêu cầu mở Cấu hình Hạng ghế

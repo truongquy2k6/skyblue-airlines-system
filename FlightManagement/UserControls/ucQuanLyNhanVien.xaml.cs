@@ -176,6 +176,9 @@ namespace FlightManagement.UserControls
                 }
 
                 FlightManagement.Helpers.ExcelExporter.ExportDataTable(dtExport, "DANH SÁCH NHÂN VIÊN HÃNG HÀNG KHÔNG SKYBLUE", "DanhSachNhanVien.xlsx");
+
+                // Ghi nhận lịch sử chỉnh sửa hệ thống
+                lichSuBus.GhiNhanChinhSua(_userId, "Xuất Excel", "Nhân viên", "Xuất danh sách nhân viên ra tệp Excel");
             }
             catch (Exception ex) 
             { 

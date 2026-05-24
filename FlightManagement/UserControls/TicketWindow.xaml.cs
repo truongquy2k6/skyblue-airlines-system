@@ -3,14 +3,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BUS;
 
 namespace FlightManagement.UserControls
 {
     public partial class TicketWindow : Window
     {
-        public TicketWindow(string tenKhach, string tuyenBay, string soHieu, string ngayBay, string gioBay, string ghe, string bookingRef, string hangGhe)
+        private int _userId;
+        private readonly LichSuBUS lichSuBus = new();
+
+        public TicketWindow(string tenKhach, string tuyenBay, string soHieu, string ngayBay, string gioBay, string ghe, string bookingRef, string hangGhe, int userId = 0)
         {
             InitializeComponent();
+            _userId = userId;
             
             txtTenKhach.Text = tenKhach.ToUpper();
             txtTuyenBay.Text = tuyenBay.ToUpper();
@@ -127,6 +132,9 @@ namespace FlightManagement.UserControls
 
                 ShowDialogMessage($"Vé đã được xuất thành công!\nĐường dẫn: {fullPath}", "Xuất vé thành công");
                 
+                // Ghi nhận lịch sử chỉnh sửa hệ thống
+                lichSuBus.GhiNhanChinhSua(_userId, "Xuất vé PNG", "Vé máy bay", $"Xuất ảnh vé PNG cho khách hàng {txtTenKhach.Text} - Mã đặt chỗ: {txtBookingRef.Text}");
+                
                 // Sau khi xuất xong thì tự động đóng cửa sổ vé
                 this.Close();
             }
@@ -172,6 +180,9 @@ namespace FlightManagement.UserControls
                     string jobName = $"{txtBookingRef.Text}_{safeName}";
                     
                     printDialog.PrintVisual(printRect, jobName);
+
+                    // Ghi nhận lịch sử chỉnh sửa hệ thống
+                    lichSuBus.GhiNhanChinhSua(_userId, "Xuất vé PDF", "Vé máy bay", $"In vé PDF/Giấy cho khách hàng {txtTenKhach.Text} - Mã đặt chỗ: {txtBookingRef.Text}");
 
                     ShowDialogMessage("Yêu cầu in vé PDF đã được gửi. Lưu ý: Hãy chọn 'Landscape' trong hộp thoại in nếu vé bị dọc.", "Thông báo");
                     this.Close();

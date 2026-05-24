@@ -11,6 +11,8 @@ namespace FlightManagement.UserControls
     public partial class ucBaoCaoThongKe : UserControl
     {
         private readonly BaoCaoBUS bus = new();
+        private readonly LichSuBUS lichSuBus = new();
+        private int _userId;
         private DataTable dtChuyenBay;
         
         // Các biến điều khiển phân trang Danh sách hành khách
@@ -19,8 +21,9 @@ namespace FlightManagement.UserControls
         private int _pageSizeHK = 10;
         private int _totalPagesHK = 1;
 
-        public ucBaoCaoThongKe() 
+        public ucBaoCaoThongKe(int userId = 0) 
         { 
+            _userId = userId;
             InitializeComponent(); 
             LoadData(); 
         }
@@ -705,6 +708,10 @@ namespace FlightManagement.UserControls
 
                     // Tiến hành in visual container
                     printDialog.PrintVisual(printContainer, jobName);
+                    
+                    // Ghi nhận lịch sử chỉnh sửa hệ thống
+                    lichSuBus.GhiNhanChinhSua(_userId, "In báo cáo", "Báo cáo thống kê", $"In {titleText.Text} - Văn phòng {txtKhuVucReport.Text}");
+
                     ShowDialogMessage("Đã gửi lệnh in báo cáo tuần kèm nhận xét và sơ đồ phê duyệt thành công!", "In Báo Cáo");
                 }
             }
@@ -740,6 +747,9 @@ namespace FlightManagement.UserControls
                     : $"BÁO CÁO HOẠT ĐỘNG ĐIỀU PHỐI TUẦN - VĂN PHÒNG {txtKhuVucReport.Text.ToUpper()}";
 
                 FlightManagement.Helpers.ExcelExporter.ExportDataGrid(activeGrid, title, fileName);
+
+                // Ghi nhận lịch sử chỉnh sửa hệ thống
+                lichSuBus.GhiNhanChinhSua(_userId, "Xuất Excel", "Báo cáo thống kê", $"Xuất {title} ra tệp Excel");
             }
             catch (System.Exception ex)
             {

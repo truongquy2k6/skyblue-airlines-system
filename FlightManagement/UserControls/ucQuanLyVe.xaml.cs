@@ -25,12 +25,15 @@ namespace FlightManagement.UserControls
         // Khai báo biến lưu trữ tổng số trang tính toán được sau khi đã lọc dữ liệu (ít nhất là 1 trang)
         private int _totalPages = 1;
 
+        private int _userId;
+
         // Khai báo DispatcherTimer để debounce chức năng tìm kiếm nhập tay (Tránh lag Database)
         private readonly System.Windows.Threading.DispatcherTimer _searchTimer;
         
         // Hàm khởi tạo của UserControl quản lý vé
-        public ucQuanLyVe() 
+        public ucQuanLyVe(int userId = 0) 
         { 
+            _userId = userId;
             // Gọi phương thức tự động sinh của WPF để khởi tạo các nút bấm, lưới dữ liệu đã thiết kế bên file XAML
             InitializeComponent(); 
             
@@ -180,7 +183,7 @@ namespace FlightManagement.UserControls
             string hangGhe = row["HangGhe"].ToString()!;
 
             // Khởi tạo một đối tượng cửa sổ TicketWindow (giao diện in vé Boarding Pass) và truyền toàn bộ các tham số vừa lấy được vào hàm tạo
-            TicketWindow ticketWindow = new TicketWindow(tenKhach, tuyenBay, soHieu, ngayBay, gioBay, ghe, bookingRef, hangGhe);
+            TicketWindow ticketWindow = new TicketWindow(tenKhach, tuyenBay, soHieu, ngayBay, gioBay, ghe, bookingRef, hangGhe, _userId);
             
             // Tìm kiếm đối tượng cửa sổ cha (Window) đang chứa UserControl này (tức là cửa sổ MainWindow)
             var ownerWindow = Window.GetWindow(this);

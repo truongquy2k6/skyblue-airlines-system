@@ -10,7 +10,7 @@ namespace FlightManagement.UserControls
             InitializeComponent();
             
             // Khởi tạo và nạp 2 UserControl con vào trong 2 Tab
-            contentDanhSachVe.Content = new ucQuanLyVe();
+            contentDanhSachVe.Content = new ucQuanLyVe(userId);
             contentDatVeMoi.Content = new ucDatVeMayBay(mainWindow, userId, scheduleId, this);
             
             // Nếu có scheduleId (chuyển từ màn hình tìm kiếm sang) thì tự động mở qua Tab Đặt vé mới
