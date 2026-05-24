@@ -128,23 +128,23 @@
                     <!-- Navigation -->
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="0,4,0,15">
-                            <TextBlock Text="TỔNG QUAN" Style="{StaticResource SidebarGroupHeader}" Margin="24,8,16,8"/>
+                            <TextBlock x:Name="headerTongQuan" Text="TỔNG QUAN" Style="{StaticResource SidebarGroupHeader}" Margin="24,8,16,8"/>
                             <RadioButton x:Name="btnTrangChu" Content="Trang chủ" Style="{StaticResource SidebarBtn}" GroupName="nav" IsChecked="True" Click="Nav_Click" Tag="HomeOutline" Uid="TrangChu"/>
                             <RadioButton x:Name="btnBaoCao" Content="Báo cáo &amp; Thống kê" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="ChartBar" Uid="BaoCao"/>
                             
-                            <TextBlock Text="VÉ &amp; DỊCH VỤ" Style="{StaticResource SidebarGroupHeader}"/>
+                            <TextBlock x:Name="headerVeDichVu" Text="VÉ &amp; DỊCH VỤ" Style="{StaticResource SidebarGroupHeader}"/>
                             <RadioButton x:Name="btnTimKiem" Content="Tìm kiếm Chuyến bay" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="AirplanSearch" Uid="TimKiem"/>
                             <RadioButton x:Name="btnDatVe" Content="Đặt vé Máy bay" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="TicketConfirmation" Uid="DatVe" Visibility="Collapsed"/>
                             <RadioButton x:Name="btnQuanLyVe" Content="Vé &amp; Đặt chỗ" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="TicketOutline" Uid="QuanLyVe"/>
                             <RadioButton x:Name="btnDichVu" Content="Quản lý Dịch vụ" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="RoomServiceOutline" Uid="DichVu"/>
                             <RadioButton x:Name="btnCSKH" Content="Chăm sóc Khách hàng" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="Headset" Uid="CSKH"/>
 
-                            <TextBlock Text="ĐIỀU HÀNH BAY" Style="{StaticResource SidebarGroupHeader}"/>
+                            <TextBlock x:Name="headerDieuHanhBay" Text="ĐIỀU HÀNH BAY" Style="{StaticResource SidebarGroupHeader}"/>
                             <RadioButton x:Name="btnLichBay" Content="Quản lý Lịch bay" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="CalendarClock" Uid="LichBay"/>
                             <RadioButton x:Name="btnTuyenBay" Content="Tuyến bay &amp; Đội bay" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="MapMarkerPath" Uid="TuyenBay"/>
                             <RadioButton x:Name="btnHangGhe" Content="Cấu hình Hạng ghế" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="SeatOutline" Uid="HangGhe"/>
 
-                            <TextBlock Text="HỆ THỐNG" Style="{StaticResource SidebarGroupHeader}"/>
+                            <TextBlock x:Name="headerHeThong" Text="HỆ THỐNG" Style="{StaticResource SidebarGroupHeader}"/>
                             <RadioButton x:Name="btnNhanVien" Content="Quản lý Nhân viên" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="AccountGroup" Uid="NhanVien"/>
                             <RadioButton x:Name="btnLichSu" Content="Lịch sử Hệ thống" Style="{StaticResource SidebarBtn}" GroupName="nav" Click="Nav_Click" Tag="History" Uid="LichSu"/>
                         </StackPanel>

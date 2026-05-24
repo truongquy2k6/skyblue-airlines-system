@@ -135,41 +135,54 @@ namespace FlightManagement
         // Phương thức chịu trách nhiệm ẩn và hiện các nút chức năng dựa vào ID quyền của người dùng
         private void ApplyPermissions()
         {
-            // Kiểm tra xem ID quyền có bằng 2 (tức là vai trò Operator / Quản lý) hay không
+            // Reset hiển thị tất cả các nút điều hướng và tiêu đề nhóm chức năng
+            btnNhanVien.Visibility = Visibility.Visible;
+            btnLichSu.Visibility = Visibility.Visible;
+            btnHangGhe.Visibility = Visibility.Visible;
+            btnLichBay.Visibility = Visibility.Visible;
+            btnTuyenBay.Visibility = Visibility.Visible;
+            btnDichVu.Visibility = Visibility.Visible;
+            btnBaoCao.Visibility = Visibility.Visible;
+            btnTimKiem.Visibility = Visibility.Visible;
+            btnQuanLyVe.Visibility = Visibility.Visible;
+            btnCSKH.Visibility = Visibility.Visible;
+            
+            headerDieuHanhBay.Visibility = Visibility.Visible;
+            headerHeThong.Visibility = Visibility.Visible;
+
+            // Phân quyền cho Điều hành viên / Quản lý (Operator - RoleID = 2)
             if (_roleId == 2)
             {
-                // Nếu là Operator, ẩn nút điều hướng đến chức năng quản lý nhân sự
+                // Ẩn các chức năng nghiệp vụ của Nhân viên bán vé (Agent)
+                btnTimKiem.Visibility = Visibility.Collapsed;
+                btnQuanLyVe.Visibility = Visibility.Collapsed;
+                btnCSKH.Visibility = Visibility.Collapsed;
+
+                // Ẩn các quyền cấu trị hệ thống tối cao của Admin
                 btnNhanVien.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút điều hướng đến chức năng theo dõi lịch sử hệ thống
                 btnLichSu.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút điều hướng đến chức năng cấu hình giá trị cốt lõi của hạng ghế
                 btnHangGhe.Visibility = Visibility.Collapsed;
+
+                // Ẩn tiêu đề nhóm HỆ THỐNG vì không có chức năng nào hiển thị
+                headerHeThong.Visibility = Visibility.Collapsed;
             }
-            // Nếu không phải là Operator, kiểm tra tiếp xem có phải là Agent (Nhân viên bán vé) hay không
+            // Phân quyền cho Nhân viên bán vé (Agent - RoleID = 3)
             else if (_roleId == 3)
             {
-                // Nếu là Agent, ẩn nút quản lý nhân viên vì nhân viên bán vé không có quyền truy cập
-                btnNhanVien.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút quản lý lịch bay để ngăn nhân viên bán vé thay đổi thời gian bay
+                // Ẩn các chức năng vận hành kỹ thuật & cấu hình của Operator
                 btnLichBay.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút quản lý cấu trúc các tuyến bay
                 btnTuyenBay.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút quản lý danh sách các tàu bay thuộc sở hữu của hãng
-                // btnDoiBay.Visibility = Visibility.Collapsed; (Đã gộp vào Tuyến bay)
-                
-                // Ẩn nút xem báo cáo thống kê doanh thu bảo mật của công ty
+                btnDichVu.Visibility = Visibility.Collapsed;
                 btnBaoCao.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút chức năng cấu hình hạng ghế
                 btnHangGhe.Visibility = Visibility.Collapsed;
-                
-                // Ẩn nút chức năng theo dõi lịch sử hoạt động chung của hệ thống
+
+                // Ẩn các quyền quản trị tối cao của Admin
+                btnNhanVien.Visibility = Visibility.Collapsed;
                 btnLichSu.Visibility = Visibility.Collapsed;
+
+                // Ẩn tiêu đề nhóm ĐIỀU HÀNH BAY & HỆ THỐNG vì không còn chức năng nào thuộc 2 nhóm này
+                headerDieuHanhBay.Visibility = Visibility.Collapsed;
+                headerHeThong.Visibility = Visibility.Collapsed;
             }
         }
 
