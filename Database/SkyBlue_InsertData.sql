@@ -265,6 +265,23 @@ INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[
 INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (4,1,4,1420,140)
 INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (5,2,5,1153,125)
 INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (6,1,7,3670,320)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (7,2,1,1166,130)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (8,2,9,320,60)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (9,1,9,970,110)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (10,2,10,300,60)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (11,1,10,1230,130)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (12,1,12,540,70)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (13,2,12,680,85)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (14,2,13,890,105)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (15,1,14,1210,130)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (16,2,11,1130,125)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (17,2,4,740,95)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (18,1,5,2200,200)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (19,2,6,1050,120)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (20,1,8,2700,260)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (21,2,8,3500,310)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (22,2,7,4400,350)
+INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (23,1,6,2100,195)
 SET IDENTITY_INSERT [dbo].[Routes] OFF
 GO
 

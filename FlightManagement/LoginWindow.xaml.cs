@@ -22,11 +22,58 @@ namespace FlightManagement
         {
             try
             {
-                // SP đã được định nghĩa sẵn trong SkyBlue_StoredProcedures.sql
-                // Chỉ cần gọi thực thi trực tiếp, không nhúng script SQL vào đây nữa
                 using (var conn = DAL.DatabaseHelper.GetConnection())
                 {
                     conn.Open();
+
+                    // Thêm các tuyến bay mới hợp lệ nếu chưa tồn tại
+                    string insertRoutesSql = @"
+                        SET IDENTITY_INSERT [dbo].[Routes] ON;
+
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 7)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (7,2,1,1166,130);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 8)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (8,2,9,320,60);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 9)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (9,1,9,970,110);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 10)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (10,2,10,300,60);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 11)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (11,1,10,1230,130);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 12)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (12,1,12,540,70);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 13)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (13,2,12,680,85);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 14)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (14,2,13,890,105);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 15)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (15,1,14,1210,130);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 16)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (16,2,11,1130,125);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 17)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (17,2,4,740,95);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 18)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (18,1,5,2200,200);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 19)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (19,2,6,1050,120);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 20)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (20,1,8,2700,260);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 21)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (21,2,8,3500,310);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 22)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (22,2,7,4400,350);
+                        IF NOT EXISTS (SELECT 1 FROM [dbo].[Routes] WHERE ID = 23)
+                            INSERT [dbo].[Routes] ([ID],[DepartureAirportID],[ArrivalAirportID],[Distance],[FlightTime]) VALUES (23,1,6,2100,195);
+
+                        SET IDENTITY_INSERT [dbo].[Routes] OFF;
+                    ";
+
+                    using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(insertRoutesSql, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Chạy Store Procedure để tự động lập lịch bay và giá vé
                     using (var cmd = new Microsoft.Data.SqlClient.SqlCommand("sp_LichBay_TaoTuDong7Ngay", conn))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
