@@ -331,3 +331,131 @@ INSERT [dbo].[AmenitiesCabinType] ([CabinTypeID],[AmenityID]) VALUES (3,10) -- �
 INSERT [dbo].[AmenitiesCabinType] ([CabinTypeID],[AmenityID]) VALUES (3,11) -- Bảo hiểm du lịch cao cấp
 INSERT [dbo].[AmenitiesCabinType] ([CabinTypeID],[AmenityID]) VALUES (3,14) -- Bộ kit ngủ cao cấp
 GO
+
+-- ==================== DỮ LIỆU THỬ NGHIỆM CSKH ====================
+
+-- 1. Tạo một vài chuyến bay mẫu để sinh vé nếu chưa có
+IF NOT EXISTS (SELECT 1 FROM Schedules WHERE FlightNumber = 'VN9991')
+BEGIN
+    INSERT INTO Schedules (FlightNumber, [Date], [Time], AircraftID, RouteID, EconomyPrice, Confirmed)
+    VALUES ('VN9991', CAST(GETDATE() AS DATE), '08:00:00', 1, 1, 1500000, 1),
+           ('VN9992', CAST(DATEADD(DAY, 1, GETDATE()) AS DATE), '13:30:00', 2, 2, 950000, 1),
+           ('VN9993', CAST(DATEADD(DAY, 2, GETDATE()) AS DATE), '19:45:00', 3, 3, 850000, 1)
+END
+
+-- 2. Sinh 20 Vé mẫu cho CSKH để liên kết vào hàng đợi Mail Queue
+IF NOT EXISTS (SELECT 1 FROM Tickets WHERE BookingReference LIKE 'CSKH%')
+BEGIN
+    DECLARE @Sched1 INT = (SELECT TOP 1 ID FROM Schedules WHERE FlightNumber = 'VN9991')
+    DECLARE @Sched2 INT = (SELECT TOP 1 ID FROM Schedules WHERE FlightNumber = 'VN9992')
+    DECLARE @Sched3 INT = (SELECT TOP 1 ID FROM Schedules WHERE FlightNumber = 'VN9993')
+
+    INSERT INTO Tickets (UserID, ScheduleID, CabinTypeID, Firstname, Lastname, Email, Phone, PassportNumber, PassportCountryID, BookingReference, Confirmed, SeatNumber)
+    VALUES 
+    (3, @Sched1, 1, N'Anh', N'Nguyễn Hoàng', 'hoanganh@gmail.com', '0912345678', 'C1234567', 193, 'CSKH01', 1, '12A'),
+    (3, @Sched1, 2, N'Hùng', N'Trần Quốc', 'quochung@gmail.com', '0922345678', 'C2234567', 193, 'CSKH02', 1, '04C'),
+    (3, @Sched1, 3, N'Linh', N'Lê Thị', 'thilinh@gmail.com', '0932345678', 'C3234567', 193, 'CSKH03', 1, '01A'),
+    (3, @Sched1, 1, N'Dũng', N'Phạm Tiến', 'tiendung@gmail.com', '0942345678', 'C4234567', 193, 'CSKH04', 1, '15D'),
+    (3, @Sched1, 2, N'Vy', N'Huỳnh Mai', 'maivy@gmail.com', '0952345678', 'C5234567', 193, 'CSKH05', 1, '06B'),
+    
+    (6, @Sched2, 1, N'Nam', N'Vũ Hải', 'hainam@gmail.com', '0962345678', 'C6234567', 193, 'CSKH06', 1, '10E'),
+    (6, @Sched2, 1, N'Trang', N'Đặng Thu', 'thutrang@gmail.com', '0972345678', 'C7234567', 193, 'CSKH07', 1, '18F'),
+    (6, @Sched2, 2, N'Long', N'Hoàng Phi', 'philong@gmail.com', '0982345678', 'C8234567', 193, 'CSKH08', 1, '08D'),
+    (6, @Sched2, 3, N'Khánh', N'Phan Minh', 'minhkhanh@gmail.com', '0992345678', 'C9234567', 193, 'CSKH09', 1, '02F'),
+    (6, @Sched2, 1, N'Tuấn', N'Bùi Anh', 'anhtuan@gmail.com', '0913345678', 'C1134567', 193, 'CSKH10', 1, '24A'),
+    
+    (9, @Sched3, 1, N'Linh', N'Dương Thùy', 'thuylinh@gmail.com', '0923345678', 'C2134567', 193, 'CSKH11', 1, '14B'),
+    (9, @Sched3, 2, N'Sơn', N'Ngô Hồng', 'hongson@gmail.com', '0933345678', 'C3134567', 193, 'CSKH12', 1, '07C'),
+    (9, @Sched3, 1, N'Hà', N'Lý Thu', 'thuha@gmail.com', '0943345678', 'C4134567', 193, 'CSKH13', 1, '20C'),
+    (9, @Sched3, 1, N'Đạt', N'Phạm Tiến', 'tiendat@gmail.com', '0953345678', 'C5134567', 193, 'CSKH14', 1, '22D'),
+    (9, @Sched3, 2, N'Ái', N'Nguyễn Trúc', 'trucai@gmail.com', '0963345678', 'C6134567', 193, 'CSKH15', 1, '05E'),
+    
+    (3, @Sched1, 1, N'Bình', N'Võ Thanh', 'thanhbinh@gmail.com', '0973345678', 'C7134567', 193, 'CSKH16', 0, '19F'), -- Vé đã hủy
+    (6, @Sched2, 2, N'Hải', N'Hoàng Minh', 'minhhai@gmail.com', '0983345678', 'C8134567', 193, 'CSKH17', 1, '09A'),
+    (9, @Sched3, 3, N'Hương', N'Trần Mai', 'maihuong@gmail.com', '0993345678', 'C9134567', 193, 'CSKH18', 1, '03A'),
+    (3, @Sched1, 1, N'Phong', N'Lê Hồng', 'hongphong@gmail.com', '0914345678', 'C1244567', 193, 'CSKH19', 1, '26B'),
+    (6, @Sched2, 1, N'Tâm', N'Nguyễn Đức', 'ductam@gmail.com', '0924345678', 'C2244567', 193, 'CSKH20', 1, '28C')
+END
+
+-- 3. Đưa 20 Vé này vào hàng đợi Mail Queue với đa dạng trạng thái (Chưa gửi, Đã gửi, Lỗi)
+IF NOT EXISTS (SELECT 1 FROM CSKH_MailQueue)
+BEGIN
+    -- Lấy danh sách các vé CSKH vừa tạo
+    DECLARE @T1 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH01')
+    DECLARE @T2 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH02')
+    DECLARE @T3 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH03')
+    DECLARE @T4 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH04')
+    DECLARE @T5 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH05')
+    DECLARE @T6 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH06')
+    DECLARE @T7 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH07')
+    DECLARE @T8 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH08')
+    DECLARE @T9 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH09')
+    DECLARE @T10 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH10')
+    DECLARE @T11 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH11')
+    DECLARE @T12 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH12')
+    DECLARE @T13 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH13')
+    DECLARE @T14 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH14')
+    DECLARE @T15 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH15')
+    DECLARE @T16 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH16')
+    DECLARE @T17 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH17')
+    DECLARE @T18 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH18')
+    DECLARE @T19 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH19')
+    DECLARE @T20 INT = (SELECT ID FROM Tickets WHERE BookingReference = 'CSKH20')
+
+    -- Trạng thái: 'Đã gửi' (SentTime có giá trị)
+    INSERT INTO CSKH_MailQueue (TicketID, Status, CreatedTime, SentTime, ErrorMessage) VALUES
+    (@T1, N'Đã gửi', DATEADD(MINUTE, -120, GETDATE()), DATEADD(MINUTE, -118, GETDATE()), NULL),
+    (@T2, N'Đã gửi', DATEADD(MINUTE, -110, GETDATE()), DATEADD(MINUTE, -109, GETDATE()), NULL),
+    (@T3, N'Đã gửi', DATEADD(MINUTE, -100, GETDATE()), DATEADD(MINUTE, -98, GETDATE()), NULL),
+    (@T4, N'Đã gửi', DATEADD(MINUTE, -90, GETDATE()), DATEADD(MINUTE, -89, GETDATE()), NULL),
+    (@T5, N'Đã gửi', DATEADD(MINUTE, -80, GETDATE()), DATEADD(MINUTE, -78, GETDATE()), NULL),
+    (@T6, N'Đã gửi', DATEADD(MINUTE, -70, GETDATE()), DATEADD(MINUTE, -69, GETDATE()), NULL),
+    (@T7, N'Đã gửi', DATEADD(MINUTE, -60, GETDATE()), DATEADD(MINUTE, -58, GETDATE()), NULL),
+
+    -- Trạng thái: 'Chưa gửi' (SentTime là NULL)
+    (@T8, N'Chưa gửi', DATEADD(MINUTE, -50, GETDATE()), NULL, NULL),
+    (@T9, N'Chưa gửi', DATEADD(MINUTE, -40, GETDATE()), NULL, NULL),
+    (@T10, N'Chưa gửi', DATEADD(MINUTE, -30, GETDATE()), NULL, NULL),
+    (@T11, N'Chưa gửi', DATEADD(MINUTE, -20, GETDATE()), NULL, NULL),
+    (@T12, N'Chưa gửi', DATEADD(MINUTE, -15, GETDATE()), NULL, NULL),
+    (@T13, N'Chưa gửi', DATEADD(MINUTE, -10, GETDATE()), NULL, NULL),
+    (@T14, N'Chưa gửi', DATEADD(MINUTE, -5, GETDATE()), NULL, NULL),
+
+    -- Trạng thái: 'Lỗi' (Có thông tin ErrorMessage)
+    (@T15, N'Lỗi', DATEADD(MINUTE, -45, GETDATE()), NULL, N'SMTP server connection timeout.'),
+    (@T16, N'Lỗi', DATEADD(MINUTE, -35, GETDATE()), NULL, N'Authentication failed: Invalid credentials.'),
+    (@T17, N'Lỗi', DATEADD(MINUTE, -25, GETDATE()), NULL, N'Recipient address rejected: Access denied.'),
+    (@T18, N'Lỗi', DATEADD(MINUTE, -18, GETDATE()), NULL, N'Daily sending quota exceeded.'),
+    (@T19, N'Lỗi', DATEADD(MINUTE, -12, GETDATE()), NULL, N'Network unreachable: host is down.'),
+    (@T20, N'Lỗi', DATEADD(MINUTE, -2, GETDATE()), NULL, N'Mail size limit exceeded.')
+END
+
+-- 4. Thêm 20 Feedback hành khách đa dạng đánh giá (Tốt, Tạm, Kém,...)
+IF NOT EXISTS (SELECT 1 FROM CSKH_Feedback)
+BEGIN
+    INSERT INTO CSKH_Feedback (PassengerName, PassengerPhone, PassengerEmail, Rating, Category, Content, CreatedTime, OperatorID)
+    VALUES
+    (N'Nguyễn Văn Hùng', '0912111222', 'vanhung@gmail.com', 5, N'Thái độ phục vụ', N'Nhân viên mặt đất và tiếp viên vô cùng thân thiện, hướng dẫn nhiệt tình khi tôi làm thủ tục bị trễ.', DATEADD(DAY, -10, GETDATE()), 2),
+    (N'Trần Thị Mai', '0922111222', 'maitran@gmail.com', 4, N'Chất lượng chuyến bay', N'Chuyến bay khởi hành đúng giờ, ghế ngồi êm ái. Tuy nhiên khoang hành khách hơi lạnh.', DATEADD(DAY, -9, GETDATE()), 2),
+    (N'Lê Minh Tuấn', '0932111222', 'tuantle@gmail.com', 3, N'Đồ ăn trên máy bay', N'Đồ ăn tạm được, nhưng suất ăn nóng phục vụ hơi chậm, khi nhận được thì đồ ăn đã nguội bớt.', DATEADD(DAY, -8, GETDATE()), 5),
+    (N'Phạm Thu Thảo', '0942111222', 'thuthao@gmail.com', 5, N'Thủ tục check-in', N'Hệ thống check-in online chạy rất nhanh và mượt mà, giúp tôi tiết kiệm được rất nhiều thời gian tại sân bay.', DATEADD(DAY, -8, GETDATE()), 5),
+    (N'Vũ Quốc Anh', '0952111222', 'quocanh@gmail.com', 2, N'Hỗ trợ hành lý', N'Hành lý ký gửi của tôi bị trầy xước nặng sau chuyến bay. Nhân viên giải quyết bồi thường hơi lâu.', DATEADD(DAY, -7, GETDATE()), 8),
+    
+    (N'Hoàng Ngọc Bảo', '0962111222', 'baongoc@gmail.com', 4, N'Thái độ phục vụ', N'Tiếp viên rất lịch sự và luôn mỉm cười. Trải nghiệm bay rất dễ chịu.', DATEADD(DAY, -7, GETDATE()), 8),
+    (N'Phan Thanh Sơn', '0972111222', 'thanhson@gmail.com', 3, N'Chất lượng chuyến bay', N'Bay khá êm nhưng hệ thống giải trí màn hình cảm ứng trước ghế bị đơ không phản hồi.', DATEADD(DAY, -6, GETDATE()), 2),
+    (N'Đỗ Diệu Linh', '0982111222', 'dieulinh@gmail.com', 5, N'Thái độ phục vụ', N'Tôi đi cùng em bé nhỏ và được các tiếp viên chủ động hỗ trợ sắp xếp chỗ ngồi cũng như hâm nóng sữa.', DATEADD(DAY, -6, GETDATE()), 5),
+    (N'Bùi Tiến Đạt', '0992111222', 'tiendat@gmail.com', 1, N'Chất lượng chuyến bay', N'Chuyến bay bị delay hơn 3 tiếng đồng hồ nhưng hãng không thông báo trước cũng như không có nước uống hỗ trợ.', DATEADD(DAY, -5, GETDATE()), 8),
+    (N'Nguyễn Thu Trang', '0913111222', 'trangthu@gmail.com', 4, N'Đồ ăn trên máy bay', N'Nước uống và đồ ăn nhẹ đa dạng. Menu suất ăn nóng chất lượng khá tốt.', DATEADD(DAY, -5, GETDATE()), 2),
+    
+    (N'Dương Phi Hùng', '0923111222', 'phihung@gmail.com', 3, N'Thủ tục check-in', N'Sân bay Nội Bài xếp hàng làm thủ tục quá đông, hãng nên mở thêm quầy hỗ trợ check-in nhanh.', DATEADD(DAY, -4, GETDATE()), 5),
+    (N'Ngô Thị Cẩm', '0933111222', 'camngo@gmail.com', 5, N'Hỗ trợ hành lý', N'Tôi quên ví trên máy bay và đã được tổ bay cùng nhân viên mặt đất tìm kiếm và bàn giao lại rất nhanh chóng.', DATEADD(DAY, -4, GETDATE()), 8),
+    (N'Lý Hải Nam', '0943111222', 'hainam@gmail.com', 2, N'Chất lượng chuyến bay', N'Chuyến bay rung lắc nhiều khi đi qua vùng thời tiết xấu. Cơ trưởng giải thích tình hình chưa rõ ràng khiến khách lo lắng.', DATEADD(DAY, -3, GETDATE()), 2),
+    (N'Võ Hoài An', '0953111222', 'hoaian@gmail.com', 4, N'Thái độ phục vụ', N'Giải đáp thắc mắc qua tổng đài hỗ trợ nhanh chóng, nhân viên nói giọng truyền cảm và lịch sự.', DATEADD(DAY, -3, GETDATE()), 5),
+    (N'Đặng Quốc Bảo', '0963111222', 'baoquoc@gmail.com', 3, N'Đồ ăn trên máy bay', N'Suất ăn cơm gà hơi khô và thiếu rau xanh, hy vọng lần tới sẽ cải thiện thực đơn.', DATEADD(DAY, -2, GETDATE()), 8),
+    
+    (N'Lâm Mỹ Hạnh', '0973111222', 'myhanh@gmail.com', 5, N'Thái độ phục vụ', N'Chuyến bay hoàn hảo, tiếp viên ân cần hỗ trợ mẹ tôi khi bà gặp khó khăn trong việc di chuyển.', DATEADD(DAY, -2, GETDATE()), 2),
+    (N'Phạm Văn Tâm', '0983111222', 'vantam@gmail.com', 1, N'Thủ tục check-in', N'Nhân viên quầy check-in làm việc rất chậm và có thái độ thờ ơ khi khách hàng hỏi thông tin.', DATEADD(DAY, -1, GETDATE()), 5),
+    (N'Trịnh Kim Chi', '0993111222', 'kimchi@gmail.com', 4, N'Chất lượng chuyến bay', N'Chuyến bay thoải mái, cất cánh và hạ cánh rất êm ái. Sẽ tiếp tục ủng hộ hãng bay.', DATEADD(DAY, -1, GETDATE()), 8),
+    (N'Đoàn Minh Khang', '0914111222', 'minhkhang@gmail.com', 2, N'Đồ ăn trên máy bay', N'Không có tùy chọn suất ăn chay sẵn trên chuyến bay khiến tôi phải chịu đói suốt 2 tiếng.', DATEADD(MINUTE, -120, GETDATE()), 2),
+    (N'Hồ Hoàng Yến', '0924111222', 'hoangyen@gmail.com', 5, N'Thái độ phục vụ', N'Dịch vụ xuất sắc từ quầy vé cho đến phòng chờ và lên máy bay. Cảm ơn SkyBlue!', DATEADD(MINUTE, -30, GETDATE()), 5)
+END

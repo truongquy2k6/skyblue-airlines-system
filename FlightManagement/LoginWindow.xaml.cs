@@ -12,7 +12,10 @@ namespace FlightManagement
         public LoginWindow()
         {
             InitializeComponent();
-            AutoUpdateDatabase();
+            Loaded += async (s, e) =>
+            {
+                await Task.Run(() => AutoUpdateDatabase());
+            };
         }
 
         private void AutoUpdateDatabase()
@@ -45,7 +48,7 @@ namespace FlightManagement
             if (e.Key == Key.Enter) XuLyDangNhap();
         }
 
-        private void XuLyDangNhap()
+        private async void XuLyDangNhap()
         {
             // Lấy email và mật khẩu từ giao diện, dùng Trim() để cắt bỏ khoảng trắng dư thừa ở hai đầu
             string email = txtEmail.Text.Trim();
@@ -58,11 +61,19 @@ namespace FlightManagement
                 return;
             }
 
+            // Thiết lập giao diện trạng thái chờ
+            btnLogin.Visibility = Visibility.Collapsed;
+            loadingArea.Visibility = Visibility.Visible;
+            loadingSpinner.Visibility = Visibility.Visible;
+            lblLoadingStatus.Text = "Đang xác thực tài khoản...";
+            lblLoadingStatus.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(63, 81, 181)); // Blue
+            txtError.Text = "";
+
             try
             {
                 // Gọi lớp BUS truyền dữ liệu xuống DAL để nhờ SQL Server kiểm tra
-                // Nếu đúng nó sẽ trả về 1 bảng dữ liệu chứa thông tin người đó
-                DataTable dt = bus.DangNhap(email, password);
+                // Chạy dưới luồng nền bằng Task.Run để tránh đơ giao diện
+                DataTable dt = await Task.Run(() => bus.DangNhap(email, password));
                 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -76,6 +87,8 @@ namespace FlightManagement
                     if (!isActive)
                     {
                         txtError.Text = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!";
+                        loadingArea.Visibility = Visibility.Collapsed;
+                        btnLogin.Visibility = Visibility.Visible;
                         return;
                     }
 
@@ -86,13 +99,21 @@ namespace FlightManagement
                     int roleId = Convert.ToInt32(dt.Rows[0]["RoleID"]);
                     string vanPhong = dt.Rows[0]["VanPhong"].ToString()!;
 
-                    // Bắn một tín hiệu ghi lại lịch sử truy cập (log) của người này với IP động nội bộ của họ
+                    // Bắn một tín hiệu ghi lại lịch sử truy cập (log) của người này với IP động nội bộ của họ dưới luồng nền
                     try 
                     { 
                         string dynamicIp = GetLocalIPAddress();
-                        new LichSuBUS().GhiNhanTruyCap(userId, dynamicIp); 
+                        await Task.Run(() => new LichSuBUS().GhiNhanTruyCap(userId, dynamicIp)); 
                     } 
                     catch { }
+
+                    // Hiển thị trạng thái đăng nhập thành công
+                    loadingSpinner.Visibility = Visibility.Collapsed;
+                    lblLoadingStatus.Text = "Đăng nhập thành công! Đang chuyển hướng...";
+                    lblLoadingStatus.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(46, 125, 50)); // Green
+
+                    // Đợi 1.2 giây trước khi mở màn hình chính
+                    await Task.Delay(1200);
 
                     // Mở màn hình chính của ứng dụng và truyền toàn bộ thông tin người dùng vào đó
                     string userEmail = dt.Columns.Contains("Email") && dt.Rows[0]["Email"] != DBNull.Value ? dt.Rows[0]["Email"].ToString()! : email;
@@ -106,12 +127,16 @@ namespace FlightManagement
                 {
                     // Tài khoản không tồn tại hoặc sai mật khẩu
                     txtError.Text = "Email hoặc mật khẩu không chính xác.";
+                    loadingArea.Visibility = Visibility.Collapsed;
+                    btnLogin.Visibility = Visibility.Visible;
                 }
             }
             catch (Exception ex)
             {
                 // Hiển thị lỗi nếu mạng yếu, rớt kết nối database...
                 txtError.Text = "Lỗi kết nối CSDL: " + ex.Message;
+                loadingArea.Visibility = Visibility.Collapsed;
+                btnLogin.Visibility = Visibility.Visible;
             }
         }
 

@@ -73,9 +73,19 @@
                     
                     <TextBlock x:Name="txtError" Text="" Foreground="#E53935" FontSize="13" Margin="0,0,0,20" HorizontalAlignment="Center"/>
                     
-                    <Button Content="Đăng nhập" Background="#3F51B5" Foreground="White" BorderThickness="0" 
-                            Height="48" FontSize="16" FontWeight="Bold" 
-                            materialDesign:ButtonAssist.CornerRadius="10" Click="btnLogin_Click"/>
+                    <Grid Height="48" Margin="0,0,0,0">
+                        <Button x:Name="btnLogin" Content="Đăng nhập" Background="#3F51B5" Foreground="White" BorderThickness="0" 
+                                Height="48" FontSize="16" FontWeight="Bold" 
+                                materialDesign:ButtonAssist.CornerRadius="10" Click="btnLogin_Click"/>
+                        
+                        <!-- Trạng thái chờ Loading -->
+                        <StackPanel x:Name="loadingArea" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                            <ProgressBar x:Name="loadingSpinner" Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                         Value="0" IsIndeterminate="True" 
+                                         Width="24" Height="24" Foreground="#3F51B5" Margin="0,0,10,0"/>
+                            <TextBlock x:Name="lblLoadingStatus" Text="Đang xác thực tài khoản..." FontSize="14" FontWeight="SemiBold" Foreground="#3F51B5" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
                 
                 <Button Style="{StaticResource MaterialDesignIconButton}" VerticalAlignment="Top" HorizontalAlignment="Right"

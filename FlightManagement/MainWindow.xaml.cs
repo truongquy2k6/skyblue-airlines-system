@@ -30,6 +30,9 @@ namespace FlightManagement
         // Biến đánh dấu trạng thái đang đăng xuất để tránh lặp vô tận khi đóng cửa sổ
         private bool _isLoggingOut = false;
 
+        // Dictionary để lưu trữ cache các trang đã được tải
+        private readonly Dictionary<string, UserControl> _pageCache = new();
+
         // Khởi tạo một Dictionary dùng chung để ánh xạ giữa mã định danh trang và tiêu đề hiển thị tương ứng
         private static readonly Dictionary<string, string> PageTitles = new()
         {
@@ -184,97 +187,129 @@ namespace FlightManagement
         // Phương thức xử lý việc tạo và hiển thị nội dung cho từng trang riêng biệt trong ứng dụng
         public void LoadPage(string pageId)
         {
-            // Sử dụng câu lệnh switch để xử lý nhiều trường hợp điều hướng khác nhau dựa vào mã trang
-            switch (pageId)
+            UserControl? page = null;
+
+            // Kiểm tra xem trang đã được khởi tạo và lưu trong Cache chưa
+            if (_pageCache.TryGetValue(pageId, out UserControl? cachedPage))
             {
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Trang chủ
-                case "TrangChu":
-                    // Tạo một thể hiện mới của UserControl Trang chủ và nhúng nó vào ContentControl của trang chính
-                    pageContent.Content = new ucTrangChu(_userId, _hoTen, _vaiTro, _roleId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Nhân viên
-                case "NhanVien":
-                    // Tạo và nhúng UserControl quản lý nhân sự vào vùng nội dung chính
-                    pageContent.Content = new ucQuanLyNhanVien(_userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Lịch bay
-                case "LichBay":
-                    // Tạo và nhúng UserControl quản lý lịch bay vào vùng nội dung chính
-                    pageContent.Content = new ucQuanLyLichBay(_userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Tìm kiếm Chuyến bay
-                case "TimKiem":
-                    // Tạo UserControl Tìm kiếm chuyến bay. Lưu ý truyền biến this (MainWindow) để UserControl có thể tương tác ngược lại
-                    pageContent.Content = new ucTimKiemChuyenBay(this, _userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Đặt vé Máy bay
-                case "DatVe":
-                    // Chuyển hướng sang module Tổng quan vé
-                    pageContent.Content = new ucTongQuanVe(this, _userId, 0);
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Dịch vụ
-                case "DichVu":
-                    // Tạo và nhúng UserControl quản lý các dịch vụ đi kèm vào vùng nội dung
-                    pageContent.Content = new ucQuanLyDichVu(_userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Vé
-                case "QuanLyVe":
-                    // Tạo và nhúng module chung quản lý vé và đặt vé
-                    pageContent.Content = new ucTongQuanVe(this, _userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Tuyến bay
-                case "TuyenBay":
-                    // Tạo và nhúng UserControl dùng để thiết lập lộ trình các tuyến bay
-                    pageContent.Content = new ucTuyenBayDoiBay(_userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Đội bay
-                case "DoiBay":
-                    // Redirect về Quản lý Tuyến bay (Vì đã gộp)
-                    pageContent.Content = new ucTuyenBayDoiBay(_userId);
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Báo cáo & Thống kê
-                case "BaoCao":
-                    // Tạo và nhúng UserControl trình diễn biểu đồ thống kê
-                    pageContent.Content = new ucBaoCaoThongKe();
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Cấu hình Hạng ghế
-                case "HangGhe":
-                    // Tạo và nhúng UserControl cấu hình quy tắc và giá của hạng ghế
-                    pageContent.Content = new ucCauHinhHangGhe(_userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Chăm sóc Khách hàng (CSKH)
-                case "CSKH":
-                    // Tạo và nhúng UserControl CSKH
-                    pageContent.Content = new ucCSKH(this, _userId);
-                    // Dừng cấu trúc switch
-                    break;
-                    
-                // Xử lý khi mã trang tương ứng với yêu cầu mở Lịch sử Hệ thống
-                case "LichSu":
-                    // Tạo và nhúng UserControl nhật ký hệ thống
-                    pageContent.Content = new ucLichSuHeThong();
-                    // Dừng cấu trúc switch
-                    break;
+                page = cachedPage;
+            }
+            else
+            {
+                // Sử dụng câu lệnh switch để xử lý nhiều trường hợp điều hướng khác nhau dựa vào mã trang
+                switch (pageId)
+                {
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Trang chủ
+                    case "TrangChu":
+                        page = new ucTrangChu(_userId, _hoTen, _vaiTro, _roleId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Nhân viên
+                    case "NhanVien":
+                        page = new ucQuanLyNhanVien(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Lịch bay
+                    case "LichBay":
+                        page = new ucQuanLyLichBay(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Tìm kiếm Chuyến bay
+                    case "TimKiem":
+                        page = new ucTimKiemChuyenBay(this, _userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Đặt vé Máy bay
+                    case "DatVe":
+                        page = new ucTongQuanVe(this, _userId, 0);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Dịch vụ
+                    case "DichVu":
+                        page = new ucQuanLyDichVu(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Vé
+                    case "QuanLyVe":
+                        page = new ucTongQuanVe(this, _userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Tuyến bay
+                    case "TuyenBay":
+                        page = new ucTuyenBayDoiBay(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Quản lý Đội bay
+                    case "DoiBay":
+                        page = new ucTuyenBayDoiBay(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Báo cáo & Thống kê
+                    case "BaoCao":
+                        page = new ucBaoCaoThongKe();
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Cấu hình Hạng ghế
+                    case "HangGhe":
+                        page = new ucCauHinhHangGhe(_userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Chăm sóc Khách hàng (CSKH)
+                    case "CSKH":
+                        page = new ucCSKH(this, _userId);
+                        break;
+                        
+                    // Xử lý khi mã trang tương ứng với yêu cầu mở Lịch sử Hệ thống
+                    case "LichSu":
+                        page = new ucLichSuHeThong();
+                        break;
+                }
+
+                if (page != null)
+                {
+                    _pageCache[pageId] = page;
+                }
+            }
+
+            if (page != null)
+            {
+                // Thêm hoạt họa mờ tỏ (Fade-in) khi nạp trang để tạo cảm giác mượt mà
+                pageContent.Opacity = 0;
+                pageContent.Content = page;
+                
+                var fadeIn = new System.Windows.Media.Animation.DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.2))
+                {
+                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut }
+                };
+                pageContent.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+
+                // Sử dụng Dispatcher với độ ưu tiên Background để trì hoãn việc tải dữ liệu nặng từ Database.
+                // Giúp luồng giao diện hoàn thành mượt mà hoạt họa chuyển trang trước, tránh bị khựng giật.
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    TriggerPageRefresh(page);
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+        }
+
+        // Tự động tìm và gọi hàm LoadData() có sẵn trong UserControl để đảm bảo dữ liệu mới nhất
+        private static void TriggerPageRefresh(UserControl page)
+        {
+            try
+            {
+                var loadDataMethod = page.GetType().GetMethod("LoadData", 
+                    System.Reflection.BindingFlags.Instance | 
+                    System.Reflection.BindingFlags.NonPublic | 
+                    System.Reflection.BindingFlags.Public);
+                
+                if (loadDataMethod != null)
+                {
+                    loadDataMethod.Invoke(page, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi làm mới dữ liệu trang: " + ex.Message);
             }
         }
 
@@ -283,9 +318,7 @@ namespace FlightManagement
         {
             // Thiết lập trạng thái của nút radio Tìm kiếm thành được chọn (để nổi bật giao diện đang active)
             btnTimKiem.IsChecked = true;
-            
-            // Gọi trực tiếp bộ tạo giao diện của trang Tìm kiếm và nạp nó vào vùng trung tâm màn hình
-            pageContent.Content = new ucTimKiemChuyenBay(this, _userId);
+            LoadPage("TimKiem");
         }
 
         // Phương thức công khai dùng để điều hướng ứng dụng và đánh dấu active trên thanh menu trái
@@ -302,8 +335,18 @@ namespace FlightManagement
             // Bật sáng nút "Vé & Đặt chỗ" trên Sidebar
             btnQuanLyVe.IsChecked = true;
             
-            // Khởi tạo module chung và nạp tham số scheduleId để tự động bật Tab "Đặt vé mới"
-            pageContent.Content = new ucTongQuanVe(this, _userId, scheduleId);
+            // Tạo mới để truyền tham số scheduleId
+            var page = new ucTongQuanVe(this, _userId, scheduleId);
+            _pageCache["QuanLyVe"] = page; // Cập nhật lại cache
+
+            pageContent.Opacity = 0;
+            pageContent.Content = page;
+
+            var fadeIn = new System.Windows.Media.Animation.DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.2))
+            {
+                EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut }
+            };
+            pageContent.BeginAnimation(UIElement.OpacityProperty, fadeIn);
         }
 
         // Phương thức được gọi tự động khi người dùng nhấp vào nút đăng xuất tài khoản

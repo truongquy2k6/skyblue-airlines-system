@@ -1,19 +1,67 @@
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Text.Json;
 
 namespace FlightManagement.Services
 {
     public class EmailNotificationService
     {
-        private readonly string? _host = Environment.GetEnvironmentVariable("FM_SMTP_HOST");
-        private readonly string? _port = Environment.GetEnvironmentVariable("FM_SMTP_PORT");
-        private readonly string? _username = Environment.GetEnvironmentVariable("FM_SMTP_USER");
-        private readonly string? _password = Environment.GetEnvironmentVariable("FM_SMTP_PASS");
-        private readonly string? _from = Environment.GetEnvironmentVariable("FM_SMTP_FROM");
-        private readonly string? _fromName = Environment.GetEnvironmentVariable("FM_SMTP_FROM_NAME");
-        private readonly string? _replyTo = Environment.GetEnvironmentVariable("FM_SMTP_REPLY_TO");
-        private readonly string? _enableSsl = Environment.GetEnvironmentVariable("FM_SMTP_SSL");
+        private string? _host;
+        private string? _port;
+        private string? _username;
+        private string? _password;
+        private string? _from;
+        private string? _fromName;
+        private string? _replyTo;
+        private string? _enableSsl;
+
+        public EmailNotificationService()
+        {
+            try
+            {
+                string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+                if (File.Exists(configPath))
+                {
+                    string json = File.ReadAllText(configPath);
+                    using JsonDocument doc = JsonDocument.Parse(json);
+                    if (doc.RootElement.TryGetProperty("SmtpSettings", out JsonElement smtpSection))
+                    {
+                        if (smtpSection.TryGetProperty("Host", out JsonElement hostProp)) _host = hostProp.GetString();
+                        if (smtpSection.TryGetProperty("Port", out JsonElement portProp))
+                        {
+                            _port = portProp.ValueKind == JsonValueKind.Number ? portProp.GetInt32().ToString() : portProp.GetString();
+                        }
+                        if (smtpSection.TryGetProperty("Username", out JsonElement userProp)) _username = userProp.GetString();
+                        if (smtpSection.TryGetProperty("Password", out JsonElement passProp)) _password = passProp.GetString();
+                        if (smtpSection.TryGetProperty("From", out JsonElement fromProp)) _from = fromProp.GetString();
+                        if (smtpSection.TryGetProperty("FromName", out JsonElement fromNameProp)) _fromName = fromNameProp.GetString();
+                        if (smtpSection.TryGetProperty("ReplyTo", out JsonElement replyProp)) _replyTo = replyProp.GetString();
+                        if (smtpSection.TryGetProperty("EnableSsl", out JsonElement sslProp))
+                        {
+                            _enableSsl = (sslProp.ValueKind == JsonValueKind.True || sslProp.ValueKind == JsonValueKind.False) 
+                                ? sslProp.GetBoolean().ToString().ToLower() 
+                                : sslProp.GetString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Fallback silently if appsettings.json has errors
+            }
+
+            // Fallback to environment variables if not set in JSON
+            _host ??= Environment.GetEnvironmentVariable("FM_SMTP_HOST");
+            _port ??= Environment.GetEnvironmentVariable("FM_SMTP_PORT");
+            _username ??= Environment.GetEnvironmentVariable("FM_SMTP_USER");
+            _password ??= Environment.GetEnvironmentVariable("FM_SMTP_PASS");
+            _from ??= Environment.GetEnvironmentVariable("FM_SMTP_FROM");
+            _fromName ??= Environment.GetEnvironmentVariable("FM_SMTP_FROM_NAME");
+            _replyTo ??= Environment.GetEnvironmentVariable("FM_SMTP_REPLY_TO");
+            _enableSsl ??= Environment.GetEnvironmentVariable("FM_SMTP_SSL");
+        }
 
         public bool IsConfigured =>
             !string.IsNullOrWhiteSpace(_host) &&
@@ -21,6 +69,7 @@ namespace FlightManagement.Services
             !string.IsNullOrWhiteSpace(_username) &&
             !string.IsNullOrWhiteSpace(_password) &&
             !string.IsNullOrWhiteSpace(_from);
+
 
         public void SendBookingConfirmation(
             string toEmail,
